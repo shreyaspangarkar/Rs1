@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-width: 600px) {
+            table, th, td {
+                display: block;
+                width: 100%;
+            }
+
+            th {
+                text-align: right;
+            }
+
+            td {
+                text-align: left;
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if member_id %}
+        <h2>Transaction Results for Member ID: {{ member_id }}</h2>
+        <table>
+            <tr>
+                <th>Transaction Date</th>
+                <th>Transaction ID</th>
+                <th>Total Debit</th>
+                <th>Total Credit</th>
+            </tr>
+            {% for transaction in transactions %}
+            <tr>
+                <td data-label="Transaction Date">{{ transaction['TRAN_DATE'] }}</td>
+                <td data-label="Transaction ID">{{ transaction['TRAN_ID'] }}</td>
+                <td data-label="Account name ">{{ transaction['account_name'] }}</td>
+
+                <td data-label="Total Debit">{{ transaction['total_debit'] }}</td>
+                <td data-label="Total Credit">{{ transaction['total_credit'] }}</td>
+                
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No transactions found for the given criteria.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% elif transactions %}
+        <h2>Account Entries Results</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction Date</th>
+                    <th>Transaction ID</th>
+                    <th>Transaction SR ID</th>
+                    <th>Account Name</th>
+                    <th>Debit Amount</th>
+                    <th>Credit Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td data-label="Transaction Date">{{ transaction['tran_date'] }}</td>
+                    <td data-label="Transaction ID">{{ transaction['tran_id'] }}</td>
+                    <td data-label="Transaction SR ID">{{ transaction['tran_sr_id'] }}</td>
+                    <td data-label="Account Name">{{ transaction['account_name'] }}</td>
+                    <td data-label="Debit Amount">{{ transaction['dr_amt'] }}</td>
+                    <td data-label="Credit Amount">{{ transaction['cr_amt'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No transactions found for the given criteria.</p>
+    {% endif %}
+</body>
+</html>
+
+

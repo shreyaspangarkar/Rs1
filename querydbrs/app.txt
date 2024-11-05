@@ -1,0 +1,198 @@
+'''from flask import Flask, render_template, request, redirect, url_for
+import mysql.connector
+
+app = Flask(__name__)
+
+# Database configuration
+db_config = {
+    'host': 'localhost',
+    'user': 'monsterzero',  # Update with your database user
+    'password': 'Monsterzero@8910',  # Update with your database password
+    'database': 'dbrs'  # Update with your database name
+}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == 'sa' and password == 'password8910':
+            return redirect(url_for('sample_page'))  # Redirect to sample.html
+        else:
+            return render_template('login.html', error='Invalid credentials!')
+    return render_template('login.html')
+
+@app.route('/sample')
+def sample_page():
+    return render_template('sample.html')
+
+@app.route('/member_transactions', methods=['POST'])
+def member_transactions():
+    # Retrieve form data from sample.html
+    member_id = request.form['member_id']
+    start_date = request.form['date_from_member']
+    end_date = request.form['date_to_member']
+
+    # Establish a database connection
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch member transaction data
+    query = """
+        SELECT TRAN_DATE, TRAN_ID, SUM(DR_AMT) AS total_debit, SUM(CR_AMT) AS total_credit 
+        FROM detail_member_trans
+        LEFT JOIN mast_account ON acc_id = account_id 
+        WHERE tran_date >= %s AND tran_date <= %s AND mbr_id = %s
+        GROUP BY tran_date, tran_ID
+        ORDER BY tran_date, tran_ID;
+    """
+    cursor.execute(query, (start_date, end_date, member_id))
+    transactions = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    # Render the result page with fetched transactions
+    return render_template('result.html', member_id=member_id, transactions=transactions)
+
+@app.route('/account_entries', methods=['POST'])
+def account_entries():
+    # Retrieve form data from sample.html
+    date_from = request.form['date_from_account']
+    date_to = request.form['date_to_account']
+
+    # Establish a database connection
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch account entries data
+    query = """
+        SELECT a.tran_date, a.tran_id, a.tran_sr_id, b.account_name, a.dr_amt, a.cr_amt
+        FROM journal_entries a
+        LEFT JOIN mast_account b ON a.account_id = b.account_id
+        WHERE a.tran_date >= %s AND a.tran_date <= %s
+        ORDER BY a.tran_date, a.tran_id;
+    """
+    cursor.execute(query, (date_from, date_to))
+    transactions = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    # Render the result page with fetched account entries
+    return render_template('result.html', transactions=transactions)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+'''
+
+
+
+
+
+
+from flask import Flask, render_template, request, redirect, url_for
+import mysql.connector
+
+app = Flask(__name__)
+
+# Database configuration
+db_config = {
+    'host': 'localhost',
+    'user': 'monsterzero',  # Update with your database user
+    'password': 'Monsterzero@8910',  # Update with your database password
+    'database': 'dbrs'  # Update with your database name
+}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    # Commented out login functionality
+    # if request.method == 'POST':
+    #     username = request.form['username']
+    #     password = request.form['password']
+    #     if username == 'sa' and password == 'password8910':
+    #         return redirect(url_for('sample_page'))  # Redirect to sample.html
+    #     else:
+    #         return render_template('login.html', error='Invalid credentials!')
+    
+    # Directly redirect to sample.html without login
+    return redirect(url_for('sample_page'))
+
+@app.route('/sample')
+def sample_page():
+    return render_template('sample.html')
+
+@app.route('/member_transactions', methods=['POST'])
+def member_transactions():
+    # Retrieve form data from sample.html
+    member_id = request.form['member_id']
+    start_date = request.form['date_from_member']
+    end_date = request.form['date_to_member']
+
+    # Establish a database connection
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch member transaction data
+    query = """SELECT  TRAN_DATE,
+        TRAN_ID , b.account_NAME,
+        DR_AMT AS total_debit,  CR_AMT  AS total_credit
+        FROM detail_member_trans a
+        LEFT JOIN mast_account b on a.acc_id= b.account_id
+        WHERE tran_date>= %s and
+        tran_date <= %s and 
+        mbr_id= %s
+        order by tran_date, tran_ID;
+    """
+    cursor.execute(query, (start_date, end_date, member_id))
+    transactions = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    # Render the result page with fetched transactions
+    return render_template('result.html', member_id=member_id, transactions=transactions)
+
+@app.route('/account_entries', methods=['POST'])
+def account_entries():
+    # Retrieve form data from sample.html
+    date_from = request.form['date_from_account']
+    date_to = request.form['date_to_account']
+
+    # Establish a database connection
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor(dictionary=True)
+
+    # SQL query to fetch account entries data
+    query = """
+        SELECT a.tran_date, a.tran_id, a.tran_sr_id, b.account_name, a.dr_amt, a.cr_amt
+        FROM journal_entries a
+        LEFT JOIN mast_account b ON a.account_id = b.account_id
+        WHERE a.tran_date >= %s AND a.tran_date <= %s
+        ORDER BY a.tran_date, a.tran_id;
+    """
+    cursor.execute(query, (date_from, date_to))
+    transactions = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    # Render the result page with fetched account entries
+    return render_template('result.html', transactions=transactions)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+
+
+

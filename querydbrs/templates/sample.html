@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive SQL Query Reports</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #343a40;
+            color: white;
+            height: 100%;
+            padding-top: 20px;
+        }
+        .sidebar h2 {
+            background-color: #007bff;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        .sidebar div {
+            padding: 15px;
+            margin: 10px;
+            background-color: #495057;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar div:hover {
+            background-color: #6c757d;
+        }
+        .content {
+            width: 75%;
+            padding: 40px;
+            background-color: #ffffff;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        h3 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        .input-field input {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>REPORTS</h2>
+    <div id="report1" onclick="showReport('report1')">Member Transactions</div>
+    <div id="report2" onclick="showReport('report2')">Account Entries</div>
+    <div id="report3" onclick="showReport('report3')">Report 3</div>
+</div>
+
+<div class="content">
+    <!-- Member Transactions Section -->
+    <div id="report1-params" class="hidden">
+        <h3>TRANSCATION FOR A MEMBER</h3>
+        <form action="/member_transactions" method="POST">
+            <div class="input-field">
+                <label for="member-id">Member ID:</label>
+                <input type="text" id="member-id" name="member_id" placeholder="Enter Member ID" required>
+            </div>
+            <div class="input-field">
+                <label for="date-from-member">Date From:</label>
+                <input type="date" id="date-from-member" name="date_from_member" required>
+            </div>
+            <div class="input-field">
+                <label for="date-to-member">Date To:</label>
+                <input type="date" id="date-to-member" name="date_to_member" required>
+            </div>
+            <div class="input-field">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+
+    <!-- Account Entries Section -->
+    <div id="report2-params" class="hidden">
+        <h3>Parameters for Account Entries</h3>
+        <form action="/account_entries" method="POST">
+            <div class="input-field">
+                <label for="date-from-account">Date From:</label>
+                <input type="date" id="date-from-account" name="date_from_account" required>
+            </div>
+            <div class="input-field">
+                <label for="date-to-account">Date To:</label>
+                <input type="date" id="date-to-account" name="date_to_account" required>
+            </div>
+            <div class="input-field">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+
+    <!-- Report 3 Section -->
+    <div id="report3-params" class="hidden">
+        <h3>Parameters for Report 3</h3>
+        <div class="input-field">
+            <label for="param5">Parameter 1:</label>
+            <input type="text" id="param5" placeholder="Enter Parameter 1">
+        </div>
+        <div class="input-field">
+            <label for="param6">Parameter 2:</label>
+            <input type="text" id="param6" placeholder="Enter Parameter 2">
+        </div>
+    </div>
+</div>
+
+<script>
+    function showReport(reportId) {
+        // Hide all parameter sections
+        document.getElementById('report1-params').classList.add('hidden');
+        document.getElementById('report2-params').classList.add('hidden');
+        document.getElementById('report3-params').classList.add('hidden');
+
+        // Show the selected report's parameters
+        document.getElementById(`${reportId}-params`).classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
